@@ -16,6 +16,7 @@ interface ICLIOptions {
     noCheck: boolean
     subProto?: string
     header: string[]
+    reconnectOnClose: number
 }
 
 const parser = new ArgumentParser({version, addHelp: true})
@@ -85,6 +86,13 @@ parser.addArgument(['-s', '--subprotocol'], {
     type: String,
 })
 
+parser.addArgument(['-x', '--reconnect-on-close'], {
+    dest: 'reconnectOnClose',
+    help: 'Reconnect to server after RECONNECT_MS milliseconds when connection closes.',
+    metavar: 'RECONNECT_MS',
+    type: Number,
+})
+
 parser.addArgument(['address'], {
     nargs: '?',
     type: String,
@@ -111,6 +119,7 @@ const options: any = {
     outputStream: process.stdout,
     perMessageDeflate: args.deflate,
     protocol: args.subProto,
+    reconnectOnClose: args.reconnectOnClose,
     rejectUnauthorized: !args.noCheck,
     reportClose: args.reportClose,
     sendResize: args.sendResize,

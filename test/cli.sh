@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function sha256() {
-    echo $(shasum -p -a 256 $1 | awk '{ print $1 }')
+    echo $(sha1sum $1 | awk '{ print $1 }')
 }
 
 test_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

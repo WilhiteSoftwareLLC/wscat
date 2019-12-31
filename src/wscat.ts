@@ -35,6 +35,7 @@ export interface IConnectOptions extends IOptions {
     address: string
     headers: { [key: string]: string; }
     rejectUnauthorized: boolean
+    reconnectOnClose: number
 }
 
 export interface IListenOptions extends IOptions {
@@ -75,6 +76,16 @@ function setup(options: IOptions, socket: WebSocket) {
             process.stdout.write(`${code}:${reason}\n`)
         }
 
+        if ((options as IConnectOptions).reconnectOnClose) {
+            if (options.reportClose) {
+                const msg = 'Reconnecting in ' + (options as IConnectOptions).reconnectOnClose +
+                    ' ms to ' + (options as IConnectOptions).address + '\n'
+                process.stderr.write(msg)
+            }
+            setTimeout(() => connect(options as IConnectOptions), (options as IConnectOptions).reconnectOnClose)
+            return
+        }
+
         if (options.inputStream === process.stdin && process.stdin.isTTY) {
             if (options.useRaw) {
                 const stdin = process.stdin as TtyReadStream
@@ -83,6 +94,11 @@ function setup(options: IOptions, socket: WebSocket) {
             process.exit()
         }
     })
+
+    stream.on('error', (e) => {
+        process.stderr.write(`${e}\n`)
+    })
+
     stream.on('finish', (e) => {
         if (!options.keepOpen && stream.hasWritten) {
             socket.close()
