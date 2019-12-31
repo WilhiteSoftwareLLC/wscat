@@ -18,7 +18,7 @@ Usage
 
 ```
 $ wscat -h
-usage: wscat [-h] [-v] [-l PORT] [-b] [-H HEADER] [-n] [-k] [-d] [-s SUBP] [address]
+usage: wscat [-h] [-v] [-l PORT] [-b] [-H HEADER] [-n] [-k] [-d] [-x DELAY] [-s SUBP] [address]
 
 Positional arguments:
   address
@@ -35,6 +35,9 @@ Optional arguments:
   -n, --no-check        Do not check for unauthorized certificates.
   -k, --keep-open       Do not close the socket after EOF.
   -d, --deflate         Use per-message deflate.
+  -x, --reconnect-on-close DELAY
+                        Retry the connection after DELAY milliseconds when
+                        a client socket conection fails.
   -s SUBP, --subprotocol SUBP
                         WebSocket subprotocol
 ```
